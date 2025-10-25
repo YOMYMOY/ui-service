@@ -47,6 +47,6 @@ public class HechoCommand extends AbstractCommand {
         bot.reply(chatId, "📰 *" + safe(hecho.getTitulo()) + "*\n" +
                 "Estado: " + estadoEmoji(nullTo(hecho.getEstado(), "activo")) + " `" +
                 hecho.getEstado() + "`\n" +
-                "Descripción: " + safe(nullTo(hecho.getDescripcion(), "-")));
+                "Colección: " + safe(nullTo(hecho.getNombreColeccion(), "-")));
     }
 }

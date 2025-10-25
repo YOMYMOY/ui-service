@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 public class HechoResponse {
     private String id;
     private String titulo;
-    private String descripcion;
+    private String nombreColeccion;
     private String estado;
 }
