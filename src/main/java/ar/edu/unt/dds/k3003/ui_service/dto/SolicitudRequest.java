@@ -6,11 +6,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class SolicitudRequest {
     @JsonProperty("hechoId")
     private String hechoId;
     private String descripcion;
     private String estado;
+
+    public SolicitudRequest(String hechoId, String descripcion, String estado) {
+        this.hechoId = hechoId;
+        this.descripcion = descripcion;
+        this.estado = estado;
+    }
+
+    public SolicitudRequest() {
+    }
 }

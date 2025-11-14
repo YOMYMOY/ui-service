@@ -28,8 +28,14 @@ public class FuentesHelpCommand extends AbstractCommand {
         long chatId = update.getMessage().getChatId();
         bot.reply(chatId, """
                         📰 *Fuente* — comandos:
+                        
+                        *Gestión:*
                         • `/hecho <id>` — Muestra detalle de un hecho
                         • `/agregar_hecho <coleccion> | <titulo> | <descripcion>` — Crea un hecho
+                        
+                        *Búsqueda:*
+                        • `/buscar <palabra_clave> | <tags>` — Busca hechos por palabra clave y tags
+                        • `/tags` — Muestra los tags válidos disponibles
                         """);
     }
 

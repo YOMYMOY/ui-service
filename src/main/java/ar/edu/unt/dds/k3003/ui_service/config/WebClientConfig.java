@@ -20,6 +20,9 @@ public class WebClientConfig {
     @Value("${urls.solicitudes}")
     private String solicitudesBaseUrl;
 
+    @Value("${urls.search}")
+    private String searchBaseUrl;
+
     @Bean("agregadorWebClient")
     public WebClient agregadorWebClient(WebClient.Builder builder) {
         return builder.baseUrl(trimSlash(agregadorBaseUrl)).build();
@@ -38,6 +41,11 @@ public class WebClientConfig {
     @Bean("solicitudesWebClient")
     public WebClient solicitudesWebClient(WebClient.Builder builder) {
         return builder.baseUrl(trimSlash(solicitudesBaseUrl)).build();
+    }
+
+    @Bean("searchWebClient")
+    public WebClient searchWebClient(WebClient.Builder builder) {
+        return builder.baseUrl(trimSlash(searchBaseUrl)).build();
     }
 
     private static String trimSlash(String base) {

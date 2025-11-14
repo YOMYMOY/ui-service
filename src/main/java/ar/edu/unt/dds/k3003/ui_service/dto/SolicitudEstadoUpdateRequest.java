@@ -5,9 +5,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class SolicitudEstadoUpdateRequest {
     private String id;
     private String estado;
+
+    public SolicitudEstadoUpdateRequest(String id, String estado) {
+        this.id = id;
+        this.estado = estado;
+    }
+
+    public SolicitudEstadoUpdateRequest() {
+    }
 }
