@@ -62,7 +62,8 @@ public class ColeccionCommand extends AbstractCommand {
 
         List<HechoResponse> hechosSigPag = agregadorService.listarHechosPorColeccion(coleccion, Integer.parseInt(pagina) + 1);
 
+        int pagianSiguiente = Integer.parseInt(pagina) + 1;
         bot.reply(chatId, "🗂️ *Hechos en* _" + safe(coleccion) + "_\n" + listado +
-               (!hechosSigPag.isEmpty() ? "\n " + "siguiente pagina: /coleccion "+ safe(coleccion) + " " + (Integer.parseInt(pagina) + 1) : ""));
+               (!hechosSigPag.isEmpty() ? "\n " + "siguiente pagina: /coleccion "+ safe(coleccion) + " | " + pagianSiguiente : ""));
     }
 }

@@ -28,7 +28,7 @@ public class AgregadorHelpCommand extends AbstractCommand {
         long chatId = update.getMessage().getChatId();
         bot.reply(chatId, """
                         🗂️ *Agregador* — comandos:
-                        • `/coleccion <nombre>` — Lista los *hechos* de esa colección
+                        • `/coleccion <nombre> | <pagina>` — Lista los *hechos* de esa colección
                         """);
     }
 
