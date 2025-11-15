@@ -36,7 +36,7 @@ public class SearchMicroserviceService {
                     uriBuilder.path("/search")
                             .queryParam("palabra", palabra)
                             .queryParam("page", page)
-                            .queryParam("size", 5);
+                            .queryParam("size", 2);
 
                     if (tags != null && !tags.isEmpty()) {
                         tags.forEach(tag -> uriBuilder.queryParam("tags", tag));

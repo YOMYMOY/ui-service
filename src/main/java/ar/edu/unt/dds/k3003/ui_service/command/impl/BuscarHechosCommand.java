@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,15 +37,21 @@ public class BuscarHechosCommand extends AbstractCommand {
     public void execute(Update update, String rawArgs, TelegramBot bot) {
         long chatId = update.getMessage().getChatId();
 
-        List<String> parts = splitPipe(rawArgs, 1);
+        //List<String> parts = splitPipe(rawArgs, 1);
+        List<String> parts = Arrays.stream(rawArgs.split("\\|"))
+                .map(String::trim)
+                .filter(s -> !s.isBlank())
+                .collect(Collectors.toList());
+
+        if (rawArgs == null || rawArgs.isBlank()) {
+            throw new IllegalArgumentException("\uD83D\uDD11 Falta `<palabra_clave>` para buscar los hechos.");
+        }
 
         String palabra = parts.get(0);
         List<String> tags = new ArrayList<>();
         int page = 0;
 
-        if (rawArgs == null || rawArgs.isBlank()) {
-            throw new IllegalArgumentException("Falta `<palabra_clave>` para buscar los hechos.");
-        }
+
 
         if (parts.size() > 1) {
             List<String> argsOpcionales = new ArrayList<>(parts.subList(1, parts.size()));
@@ -66,13 +73,14 @@ public class BuscarHechosCommand extends AbstractCommand {
 
         PageDTO<HechoDTO> pagina = searchService.buscarHechos(palabra, tags.isEmpty() ? null : tags, page);
 
+
         if (pagina == null || pagina.getTotalElements() == 0) {
-            bot.reply(chatId, "No se encontraron resultados para `" + safe(palabra) + "`.");
+            bot.reply(chatId, "❓ No se encontraron resultados para `" + safe(palabra) + "`.");
             return;
         }
 
         String listado = pagina.getContent().stream()
-                .map(h -> "• `" + safe(h.getHechoId()) + "` . " + safe(h.getNombre()) + "\n" +
+                .map(h -> "• `" + safe(h.getHechoId()) + "` : " + safe(h.getNombre()) + "\n" +
                         " _Colección: " + safe(h.getColeccion()) + "_")
                 .collect(Collectors.joining("\n\n"));
 
@@ -84,13 +92,13 @@ public class BuscarHechosCommand extends AbstractCommand {
         String paginacion = "";
         String tagString = tags.isEmpty() ? "" : " | " + String.join(" | ", tags.stream().map(tag -> safe(tag)).collect(Collectors.toList()));
 
-        if (pagina.getNumber() > 0) {
-            paginacion += "Para pág. anterior: `/buscar " + safe(palabra) + tagString + " | " + (pagina.getNumber()) + "`\n";
+        if (!pagina.isFirst()) {
+            paginacion += "⬅\uFE0F Para pág. anterior: `/buscar " + safe(palabra) + tagString + " | " + (pagina.getNumber()) + "`\n";
         }
         if (pagina.getNumber() < pagina.getTotalPages() - 1) {
-            paginacion += "Para pág. siguiente: `/buscar " + safe(palabra) + tagString + " | " + (pagina.getNumber() + 2) + "`\n";
+            paginacion += "➡\uFE0F Para pág. siguiente: `/buscar " + safe(palabra) + tagString + " | " + (pagina.getNumber() + 2) + "`\n";
         }
 
-        bot.reply(chatId, "*Resultados de búsqueda:*\n\r" + listado + "\n\n" + footer + "\n\n" + paginacion);
+        bot.reply(chatId, "\uD83D\uDD0E *Resultados de búsqueda:*\n\r" + listado + "\n\n" + footer + "\n\n" + paginacion);
     }
 }
