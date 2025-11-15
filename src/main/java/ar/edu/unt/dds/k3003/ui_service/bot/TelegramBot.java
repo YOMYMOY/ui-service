@@ -44,14 +44,21 @@ public class TelegramBot extends TelegramLongPollingBot {
                 reply(chatId, "🤔 No entendí ese comando. Probá `/start` para ver el menú.");
             }
         } catch (WebClientResponseException ex) {
-            reply(chatId, "⚠️ *HTTP " + ex.getRawStatusCode() + "*\n" + "```" + safe(ex.getResponseBodyAsString()) + "```");
+            //reply(chatId, "⚠️ *HTTP " + ex.getRawStatusCode() + "*\n" + "```" + safe(ex.getResponseBodyAsString()) + "```");
+            error(chatId);
         } catch (IllegalArgumentException ex) {
-            reply(chatId, "⚠️ *Uso inválido:* " + safe(ex.getMessage()));
+            //reply(chatId, "⚠️ *Uso inválido:* " + safe(ex.getMessage()));
+            error(chatId);
         } catch (Exception ex) {
-            reply(chatId, "❌ *Error:* " + safe(ex.getMessage()));
-            ex.printStackTrace(); //para debuggear
+            //reply(chatId, "❌ *Error:* " + safe(ex.getMessage()));
+            //ex.printStackTrace(); //para debuggear
+            error(chatId);
         }
 
+    }
+
+    private void error(long chatId){
+            reply(chatId, "❌ *Error:* Algo salio mal 😓" );
     }
 
     private String safe(String s) {
