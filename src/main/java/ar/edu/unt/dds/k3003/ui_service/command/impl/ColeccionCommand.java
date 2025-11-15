@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +39,11 @@ public class ColeccionCommand extends AbstractCommand {
             throw new IllegalArgumentException("Falta `<nombre>` de la colección.");
         }
 
-        List<String> parts = splitPipe(rawArgs, 1);
+        //List<String> parts = splitPipe(rawArgs, 1);
+        List<String> parts = Arrays.stream(rawArgs.split("\\|"))
+            .map(String::trim)
+            .filter(s -> !s.isBlank())
+            .collect(Collectors.toList());
 
         String coleccion = parts.get(0);
         String pagina = (parts.size() > 1 && !parts.get(1).isBlank()) ? parts.get(1) : "0";
@@ -62,8 +67,8 @@ public class ColeccionCommand extends AbstractCommand {
 
         List<HechoResponse> hechosSigPag = agregadorService.listarHechosPorColeccion(coleccion, Integer.parseInt(pagina) + 1);
 
-        int pagianSiguiente = Integer.parseInt(pagina) + 1;
+        int paginaSiguiente = Integer.parseInt(pagina) + 1;
         bot.reply(chatId, "🗂️ *Hechos en* _" + safe(coleccion) + "_\n" + listado +
-               (!hechosSigPag.isEmpty() ? "\n " + "siguiente pagina: /coleccion "+ safe(coleccion) + " | " + pagianSiguiente : ""));
+               (!hechosSigPag.isEmpty() ? "\n " + "siguiente pagina: /coleccion "+ safe(coleccion) + " | " + paginaSiguiente : ""));
     }
 }
