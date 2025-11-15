@@ -43,7 +43,7 @@ public class ColeccionCommand extends AbstractCommand {
         String coleccion = parts.get(0);
         String pagina = (parts.size() > 1 && !parts.get(1).isBlank()) ? parts.get(1) : "0";
         try {
-            Integer nroPagina = Integer.parseInt(parts.get(1));
+            Integer nroPagina = Integer.parseInt(pagina);
         } catch (NumberFormatException e) {
             //System.err.println("Error: El String no es un número válido. " + e.getMessage());
             bot.reply(chatId, "🗂️ *" + safe(coleccion) + "* pagina invalida.");
