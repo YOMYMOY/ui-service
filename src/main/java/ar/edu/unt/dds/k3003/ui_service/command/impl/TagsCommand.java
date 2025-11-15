@@ -44,6 +44,6 @@ public class TagsCommand extends AbstractCommand {
                 .map(tag -> "`" + safe(tag) + "`")
                 .collect(Collectors.joining(", "));
 
-        bot.reply(chatId, "*Tags disponibles:\n" + listaTags);
+        bot.reply(chatId, "*Tags disponibles:*\n" + listaTags);
     }
 }

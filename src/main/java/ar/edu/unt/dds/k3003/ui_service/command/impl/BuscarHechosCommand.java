@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +29,7 @@ public class BuscarHechosCommand extends AbstractCommand {
 
     @Override
     public String getHelpText() {
-        return "<palabra_clave> | [tag_opciona]";
+        return "<palabra> | [tag1] | [tag2]... | [pagina]";
     }
 
     @Override
@@ -38,9 +39,28 @@ public class BuscarHechosCommand extends AbstractCommand {
         List<String> parts = splitPipe(rawArgs, 1);
 
         String palabra = parts.get(0);
-        String tags = (parts.size() > 1 && !parts.get(1).isBlank()) ? parts.get(1) : null;
+        List<String> tags = new ArrayList<>();
+        int page = 0;
 
-        PageDTO<HechoDTO> pagina = searchService.buscarHechos(palabra, tags, 0);
+        if (parts.size() > 1) {
+            List<String> argsOpcionales = new ArrayList<>(parts.subList(1, parts.size()));
+            String ultimoArg = argsOpcionales.get(argsOpcionales.size() - 1);
+
+            try {
+                int pageNum = Integer.parseInt(ultimoArg);
+                page = Math.max(0, pageNum - 1);
+                argsOpcionales.remove(argsOpcionales.size() - 1);
+            } catch (NumberFormatException e) {
+
+            }
+
+            tags = argsOpcionales.stream()
+                    .filter(t -> !t.isBlank())
+                    .map(String::toLowerCase)
+                    .collect(Collectors.toList());
+        }
+
+        PageDTO<HechoDTO> pagina = searchService.buscarHechos(palabra, tags.isEmpty() ? null : tags, page);
 
         if (pagina == null || pagina.getTotalElements() == 0) {
             bot.reply(chatId, "No se encontraron resultados para `" + safe(palabra) + "`.");
@@ -57,6 +77,16 @@ public class BuscarHechosCommand extends AbstractCommand {
                 pagina.getTotalPages(),
                 pagina.getTotalElements());
 
-        bot.reply(chatId, "*Resultados de búsqueda:*\n\r" + listado + "\n\n" + footer);
+        String paginacion = "";
+        String tagString = tags.isEmpty() ? "" : " | " + String.join(" | ", tags.stream().map(tag -> safe(tag)).collect(Collectors.toList()));
+
+        if (pagina.getNumber() > 0) {
+            paginacion += "Para pág. anterior: `/buscar " + safe(palabra) + tagString + " | " + (pagina.getNumber()) + "`\n";
+        }
+        if (pagina.getNumber() < pagina.getTotalPages() - 1) {
+            paginacion += "Para pág. siguiente: `/buscar " + safe(palabra) + tagString + " | " + (pagina.getNumber() + 2) + "`\n";
+        }
+
+        bot.reply(chatId, "*Resultados de búsqueda:*\n\r" + listado + "\n\n" + footer + "\n\n" + paginacion);
     }
 }
