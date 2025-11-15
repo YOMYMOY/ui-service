@@ -20,9 +20,9 @@ public class AgregadorMicroservicioService {
     }
 
     //Función 1: Listar hecho de una colección
-    public List<HechoResponse> listarHechosPorColeccion(String coleccion) {
+    public List<HechoResponse> listarHechosPorColeccion(String coleccion, int pagina) {
         return webClient.get()
-                .uri("/api/coleccion/{nombre}/hechos", coleccion)
+                .uri("/api/coleccion/{nombre}/hechos?page={pagina}&size=10", coleccion, pagina)
                 .retrieve()
                 .bodyToFlux(HechoResponse.class)
                 .collectList()

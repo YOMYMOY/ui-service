@@ -27,7 +27,7 @@ public class ColeccionCommand extends AbstractCommand {
 
     @Override
     public String getHelpText() {
-        return "<nombre>";
+        return "<nombre> | <pagina>";
     }
 
     @Override
@@ -38,9 +38,18 @@ public class ColeccionCommand extends AbstractCommand {
             throw new IllegalArgumentException("Falta `<nombre>` de la colección.");
         }
 
-        String coleccion = rawArgs.trim();
+        List<String> parts = splitPipe(rawArgs, 1);
 
-        List<HechoResponse> hechos = agregadorService.listarHechosPorColeccion(coleccion);
+        String coleccion = parts.get(0);
+        String pagina = (parts.size() > 1 && !parts.get(1).isBlank()) ? parts.get(1) : "0";
+        try {
+            Integer nroPagina = Integer.parseInt(parts.get(1));
+        } catch (NumberFormatException e) {
+            //System.err.println("Error: El String no es un número válido. " + e.getMessage());
+            bot.reply(chatId, "🗂️ *" + safe(coleccion) + "* pagina invalida.");
+            return;
+        }
+        List<HechoResponse> hechos = agregadorService.listarHechosPorColeccion(coleccion, Integer.parseInt(pagina));
 
         if (hechos == null || hechos.isEmpty()) {
             bot.reply(chatId, "🗂️ *" + safe(coleccion) + "* no tiene hechos cargados.");
@@ -48,11 +57,12 @@ public class ColeccionCommand extends AbstractCommand {
         }
 
         String listado = hechos.stream()
-                .limit(10)
                 .map(h -> "• `" + h.getId() + "` · " + safe(h.getTitulo()))
                 .collect(Collectors.joining("\n"));
 
+        List<HechoResponse> hechosSigPag = agregadorService.listarHechosPorColeccion(coleccion, Integer.parseInt(pagina) + 1);
+
         bot.reply(chatId, "🗂️ *Hechos en* _" + safe(coleccion) + "_\n" + listado +
-                (hechos.size() > 10 ? "\n... y " + (hechos.size() - 10) + " más" : ""));
+               (!hechosSigPag.isEmpty() ? "\n " + "siguiente pagina: /coleccion "+ safe(coleccion) + " " + (Integer.parseInt(pagina) + 1) : ""));
     }
 }
