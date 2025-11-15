@@ -42,6 +42,10 @@ public class BuscarHechosCommand extends AbstractCommand {
         List<String> tags = new ArrayList<>();
         int page = 0;
 
+        if (rawArgs == null || rawArgs.isBlank()) {
+            throw new IllegalArgumentException("Falta `<palabra_clave>` para buscar los hechos.");
+        }
+
         if (parts.size() > 1) {
             List<String> argsOpcionales = new ArrayList<>(parts.subList(1, parts.size()));
             String ultimoArg = argsOpcionales.get(argsOpcionales.size() - 1);

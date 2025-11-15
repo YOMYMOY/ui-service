@@ -32,6 +32,13 @@ public class SolicitudMicroserviceService {
 
     //Función 6: Cambiar el estado de una solicitud
     public SolicitudResponse cambiarEstadoSolicitud(SolicitudEstadoUpdateRequest request) {
+        String hardcodedJsonBody = """
+            {
+                "id": "58fd6006-2fb3-486d-a108-945bbefd2925",
+                "descripcion": "Solicitud modificada",
+                "estado": "ACEPTADA"
+            }
+        """;
         return webClient.patch()
                 .uri("/solicitudes")
                 .contentType(MediaType.APPLICATION_JSON)

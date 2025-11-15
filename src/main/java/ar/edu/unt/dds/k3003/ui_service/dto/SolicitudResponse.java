@@ -5,15 +5,22 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SolicitudResponse {
     private String id;
     private String descripcion;
     private String estado;
     private String hechoId;
+
+    public SolicitudResponse(String id, String descripcion, String estado, String hechoId) {
+        this.id = id;
+        this.descripcion = descripcion;
+        this.estado = estado;
+        this.hechoId = hechoId;
+    }
+
+    public SolicitudResponse() {
+    }
 
     public String getId() {
         return id;
